@@ -77,6 +77,7 @@
         window.addEventListener("popstate", function() {
 
             var id = that.getPanelId(document.location.hash);
+            // RWH why not just use window.location.hash below? - this seems to have a path too if not site root?
             var hashChecker = document.location.href.replace(document.location.origin + "/", "");
             //make sure we allow hash changes outside afui
             if (hashChecker == "#") return;
@@ -84,7 +85,7 @@
                 id = "#" + that.firstDiv.id;
             if (id === "") return;
             if (af(id).filter(".panel").length === 0) return;
-            if (id != "#" + that.activeDiv.id) that.goBack();
+            if (id != "#" + that.activeDiv.id) that.goTo(id);
         }, false);
 
         function setupCustomTheme() {
@@ -379,10 +380,23 @@
 
             if (delta) {
                 var tmpEl = this.history.splice(-delta).shift();
-                this.loadContent(tmpEl.target + "", 0, 1, tmpEl.transition);
-                this.transitionType = tmpEl.transition;
-                this.updateHash(tmpEl.target);
+                this.goTo(tmpEl.target, tmpEl.transition);
             }
+        },
+        /**
+         * Initiate a back/forward page transition
+           ```
+           $.ui.goTo('#home')
+           ```
+
+         * @title $.ui.goTo()
+         * @param {String} target       loadContent target
+         * @param {String} transition   loadContent transition
+         */
+        goTo: function(target, transition) {
+            this.loadContent(target + "", 0, 1, transition);
+            this.transitionType = transition;
+            this.updateHash(target);
         },
         /**
          * Clear the history queue
