@@ -1345,7 +1345,6 @@ if (!window.af || typeof(af) !== "function") {
                     cur = this[0];
                 
                 var start = $(selector, context);
-                console.log(start);
                 if (start.length === 0)
                     return $();
                 while (cur && start.indexOf(cur) == -1) {
