@@ -454,6 +454,7 @@
             if (this.refresh && this.refresh === true) {
                 this.coreAddPullToRefresh(el);
                 this.refreshContainer.style.position = "absolute";
+                this.refreshContainer.style.left = "0";
                 this.refreshContainer.style.top = "-60px";
                 this.refreshContainer.style.height = "60px";
                 this.refreshContainer.style.display = "block";
