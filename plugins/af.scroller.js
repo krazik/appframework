@@ -250,7 +250,7 @@
                 }
                 var el = afEl.get(0);
 
-                this.refreshContainer = af("<div style=\"overflow:hidden;width:100%;height:0;margin:0;padding:0;padding-left:5px;padding-right:5px;display:none;\"></div>");
+                this.refreshContainer = af("<div class=\"afscroll_refresh_container\" style=\"overflow:hidden;width:100%;height:0;margin:0;padding:0;padding-left:5px;padding-right:5px;display:none;\"></div>");
                 $(this.el).prepend(this.refreshContainer.append(el, 'top'));
                 this.refreshContainer = this.refreshContainer[0];
             },
@@ -454,7 +454,6 @@
             if (this.refresh && this.refresh === true) {
                 this.coreAddPullToRefresh(el);
                 this.refreshContainer.style.position = "absolute";
-                this.refreshContainer.style.left = "0";
                 this.refreshContainer.style.top = "-60px";
                 this.refreshContainer.style.height = "60px";
                 this.refreshContainer.style.display = "block";
