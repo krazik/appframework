@@ -1344,7 +1344,7 @@ if (!window.af || typeof(af) !== "function") {
                 var elems = [],
                     cur = this[0];
                 
-                var start = $(selector, context);
+                var start = $(selector, context);                
                 if (start.length === 0)
                     return $();
                 while (cur && start.indexOf(cur) == -1) {
@@ -2476,7 +2476,7 @@ if (!window.af || typeof(af) !== "function") {
             if (!$.isArray(args)) args = [];
             for (var i = 0; i < ev.length; i++) {
                 if (obj.__events[ev[i]]) {
-                    var evts = obj.__events[ev[i]];
+                    var evts = obj.__events[ev[i]].slice(0);
                     for (var j = 0; j < evts.length; j++)
                         if ($.isFunction(evts[j]) && evts[j].apply(obj, args) === false)
                             ret = false;

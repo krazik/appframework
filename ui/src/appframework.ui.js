@@ -1353,7 +1353,7 @@
                 if (that.scrollingDivs[oldDiv.id]) {
                     that.scrollingDivs[oldDiv.id].disable();
                 }
-            }, (that.transitionTime) + 50);
+            }, numOnly(that.transitionTime) + 50);
 
         },
         /**
