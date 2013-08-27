@@ -2,8 +2,8 @@
  * App Framwork  query selector class for HTML5 mobile apps on a WebkitBrowser.
  * Since most mobile devices (Android, iOS, webOS) use a WebKit browser, you only need to target one browser.
  * We are able to increase the speed greatly by removing support for legacy desktop browsers and taking advantage of browser features, like native JSON parsing and querySelectorAll
- 
- 
+
+
  * MIT License
  * @author AppMobi
  * @copyright Intel
@@ -167,7 +167,7 @@ if (!window.af || typeof(af) !== "function") {
             } else if (what !== nundefined) {
                 if (what instanceof $afm) {
                     return what.find(toSelect);
-                }                
+                }
 
             } else {
                 what = document;
@@ -194,7 +194,7 @@ if (!window.af || typeof(af) !== "function") {
         function _selectorAll(selector, what) {
             try {
                 return what.querySelectorAll(selector);
-              
+
             } catch (e) {
                 return [];
             }
@@ -384,7 +384,7 @@ if (!window.af || typeof(af) !== "function") {
         * @title $.isObject(param)
         */
         $.isObject = function(obj) {
-            return typeof obj === "object";
+            return typeof obj === "object" && obj !== null;
         };
 
         /**
@@ -768,7 +768,7 @@ if (!window.af || typeof(af) !== "function") {
                         if (!_attrCache[this[i].afmCacheId])
                             _attrCache[this[i].afmCacheId] = {};
                         _attrCache[this[i].afmCacheId][attr] = value;
-                    } else if (value === null && value != nundefined) {
+                    } else if (value === null) {
                         this[i].removeAttribute(attr);
                         if (this[i].afmCacheId && _attrCache[this[i].afmCacheId][attr])
                             delete _attrCache[this[i].afmCacheId][attr];
@@ -1343,8 +1343,8 @@ if (!window.af || typeof(af) !== "function") {
                     return this;
                 var elems = [],
                     cur = this[0];
-                
-                var start = $(selector, context);                
+
+                var start = $(selector, context);
                 if (start.length === 0)
                     return $();
                 while (cur && start.indexOf(cur) == -1) {
@@ -1925,7 +1925,7 @@ if (!window.af || typeof(af) !== "function") {
             $.os.webos = userAgent.match(/(webOS|hpwOS)[\s\/]([\d.]+)/) ? true : false;
             $.os.touchpad = $.os.webos && userAgent.match(/TouchPad/) ? true : false;
             $.os.ios = $.os.ipad || $.os.iphone;
-            $.os.playbook = userAgent.match(/PlayBook/) ? true : false;            
+            $.os.playbook = userAgent.match(/PlayBook/) ? true : false;
             $.os.blackberry10 = userAgent.match(/BB10/) ? true : false;
             $.os.blackberry = $.os.playbook || $.os.blackberry10|| userAgent.match(/BlackBerry/) ? true : false;
             $.os.chrome = userAgent.match(/Chrome/) ? true : false;
@@ -1973,32 +1973,46 @@ if (!window.af || typeof(af) !== "function") {
            */
         $.getCssMatrix = function(ele) {
             if ($.is$(ele)) ele = ele.get(0);
-            if (ele == nundefined) return window.WebKitCSSMatrix || window.MSCSSMatrix || {
-                    a: 0,
-                    b: 0,
-                    c: 0,
-                    d: 0,
-                    e: 0,
-                    f: 0
-            };
-            try {
-                if (window.WebKitCSSMatrix)
-                    return new WebKitCSSMatrix(window.getComputedStyle(ele).webkitTransform);
-                else if (window.MSCSSMatrix)
-                    return new MSCSSMatrix(window.getComputedStyle(ele).transform);
+
+            var matrixFn = window.WebKitCSSMatrix || window.MSCSSMatrix;
+
+            if (ele === nundefined) {
+                if (matrixFn) {
+                    return new matrixFn();
+                }
                 else {
-                    //fake css matrix
-                    var mat = window.getComputedStyle(ele)[$.feat.cssPrefix + 'Transform'].replace(/[^0-9\-.,]/g, '').split(',');
                     return {
-                        a: +mat[0],
-                        b: +mat[1],
-                        c: +mat[2],
-                        d: +mat[3],
-                        e: +mat[4],
-                        f: +mat[5]
+                        a: 0,
+                        b: 0,
+                        c: 0,
+                        d: 0,
+                        e: 0,
+                        f: 0
                     };
                 }
-            } catch (e) {
+            }
+
+            var computedStyle = window.getComputedStyle(ele);
+
+            var transform = computedStyle.webkitTransform ||
+                            computedStyle.transform ||
+                            computedStyle[$.feat.cssPrefix + 'Transform'];
+
+            if (matrixFn)
+                return new matrixFn(transform);
+            else if (transform) {
+                //fake css matrix
+                var mat = transform.replace(/[^0-9\-.,]/g, '').split(',');
+                return {
+                    a: +mat[0],
+                    b: +mat[1],
+                    c: +mat[2],
+                    d: +mat[3],
+                    e: +mat[4],
+                    f: +mat[5]
+                };
+            }
+            else {
                 return {
                     a: 0,
                     b: 0,
@@ -2099,7 +2113,7 @@ if (!window.af || typeof(af) !== "function") {
             if (event.ns)
                 var matcher = matcherFor(event.ns);
             return (handlers[afmid(element)] || []).filter(function(handler) {
-                return handler && (!event.e || handler.e == event.e) && (!event.ns || matcher.test(handler.ns)) && (!fn || handler.fn == fn || (typeof handler.fn === 'function' && typeof fn === 'function' && "" + handler.fn === "" + fn)) && (!selector || handler.sel == selector);
+                return handler && (!event.e || handler.e == event.e) && (!event.ns || matcher.test(handler.ns)) && (!fn || handler.fn == fn || (typeof handler.fn === 'function' && typeof fn === 'function' && handler.fn === fn)) && (!selector || handler.sel == selector);
             });
         }
         /**
@@ -2260,7 +2274,7 @@ if (!window.af || typeof(af) !== "function") {
                 add(this, event, callback, null, function(fn, type) {
                     return function() {
                         remove(element, type, fn);
-                        var result = fn.apply(element, arguments);                        
+                        var result = fn.apply(element, arguments);
                         return result;
                     };
                 });
@@ -2337,7 +2351,7 @@ if (!window.af || typeof(af) !== "function") {
                 });
         }
         $.fn.delegate = function(selector, event, callback) {
-            
+
             for (var i = 0; i < this.length; i++) {
                 addDelegate(this[i],event,callback,selector)
             }
