@@ -987,8 +987,12 @@
                 newDiv = $.create("div", {
                     html: content
                 });
-                if (newDiv.children('.panel') && newDiv.children('.panel').length > 0) newDiv = newDiv.children('.panel').get(0);
-                else newDiv = newDiv.get(0);
+                if (newDiv.children('.panel') && newDiv.children('.panel').length > 0) {
+                    newDiv = newDiv.find('.panel').get(0);
+                } else {
+                    newDiv = newDiv.get(0);
+                    newDiv.className = "panel";
+                }
 
                 if (!newDiv.getAttribute("data-title") && title) newDiv.setAttribute("data-title",title);
                 newId = (newDiv.id) ? newDiv.id : el.replace("#", ""); //figure out the new id - either the id from the loaded div.panel or the crc32 hash
@@ -997,7 +1001,6 @@
             } else {
                 newDiv = myEl;
             }
-            newDiv.className = "panel";
             newId = newDiv.id;
             this.addDivAndScroll(newDiv, refresh, refreshFunc);
             myEl = null;
